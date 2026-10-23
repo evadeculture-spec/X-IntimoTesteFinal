@@ -12,12 +12,15 @@ export function ProductCard({
   sizes,
   headingLevel = 3,
   index = 0,
+  hideNew,
 }: {
   product: Product;
   priority?: boolean;
   sizes?: string;
   headingLevel?: 2 | 3;
   index?: number;
+  /** Numa secção que já é "novidades", a etiqueta repetiria a informação. */
+  hideNew?: boolean;
 }) {
   const [first, second] = product.colours;
   const soldOut = isProductSoldOut(product);
@@ -26,7 +29,7 @@ export function ProductCard({
   const pct = sale ? Math.round((1 - product.price / product.compareAtPrice!) * 100) : 0;
 
   return (
-    <article className={`card${soldOut ? " is-sold-out" : ""}`} data-reveal style={{ "--i": index % 4 } as React.CSSProperties}>
+    <article className={`card${soldOut ? " is-sold-out" : ""}`} data-index={index}>
       <div className="card__media">
         {soldOut ? (
           <span className="stamp stamp--ink">Esgo&shy;tado</span>
@@ -34,8 +37,6 @@ export function ProductCard({
           <span className="stamp">
             <span className="visually-hidden">Redução de </span>−{pct}%
           </span>
-        ) : product.isNew ? (
-          <span className="stamp">Novo</span>
         ) : null}
         <ProductMedia product={product} colour={first!} priority={priority} sizes={sizes} decorative />
         {second ? (
@@ -45,7 +46,10 @@ export function ProductCard({
         ) : null}
       </div>
       <div className="card__meta">
-        <span className="card__brand">{getBrand(product.brandId)?.name}</span>
+        <span className="card__brand">
+          {getBrand(product.brandId)?.name}
+          {product.isNew && !hideNew && !soldOut ? <span className="card__new"> · Novo</span> : null}
+        </span>
         <H className="card__name">
           <Link className="card__link" href={`/produto/${product.slug}`}>
             {product.name}
@@ -62,8 +66,8 @@ export function ProductCard({
           ))}
         </span>
         <span className="card__note">
-          {product.colours.length > 1 ? plural(product.colours.length, "cor", "cores") : first!.name} · {product.sizes[0]}–
-          {product.sizes.at(-1)}
+          <span className="visually-hidden">{plural(product.colours.length, "cor", "cores")}, tamanhos </span>
+          {product.sizes.length > 1 ? `${product.sizes[0]}–${product.sizes.at(-1)}` : product.sizes[0]}
         </span>
       </div>
     </article>

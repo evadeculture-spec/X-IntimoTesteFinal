@@ -10,7 +10,7 @@ import { RevealObserver } from "@/components/layout/RevealObserver";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { isDemo } from "@/lib/commerce/catalog";
-import { siteUrl } from "@/lib/commerce/settings";
+import { shippingMethods, siteUrl } from "@/lib/commerce/settings";
 
 // Só os dois cortes usados (romano 400, itálico 300) — evita ~280 KB do ficheiro variável com eixo óptico.
 const display = Newsreader({
@@ -69,6 +69,8 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const demo = isDemo();
+  const freeShippingFrom =
+    shippingMethods().find((m) => m.regions !== "pickup" && m.regions.includes("continente"))?.freeFrom ?? null;
   return (
     <html lang="pt-PT" className={`${display.variable} ${displayItalic.variable} ${sans.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
@@ -78,7 +80,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a className="skip-link" href="#conteudo">
           Saltar para o conteúdo
         </a>
-        <CartProvider>
+        <CartProvider freeShippingFrom={freeShippingFrom}>
           {demo ? <DemoStrip /> : null}
           <SiteHeader />
           <main id="conteudo" tabIndex={-1}>

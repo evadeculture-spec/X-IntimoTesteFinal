@@ -20,7 +20,7 @@ export interface ProductQuery {
   pagina: number;
 }
 
-export const PAGE_SIZE = 12;
+export const PAGE_SIZE = 24;
 
 type Params = Record<string, string | string[] | undefined>;
 

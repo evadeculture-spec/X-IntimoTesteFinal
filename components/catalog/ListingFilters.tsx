@@ -34,6 +34,19 @@ function toSearch(form: HTMLFormElement): string {
   return s ? `?${s}` : "";
 }
 
+/** Agrupa tamanhos por sistema (roupa adulta, criança, meias) para não os misturar. */
+function sizeGroups(sizes: string[]) {
+  const groups = [
+    { label: "Adulto", sizes: sizes.filter((s) => /^X{0,2}[SML]$|^X{1,2}L$/.test(s)) },
+    { label: "Criança", sizes: sizes.filter((s) => /^\d+A$/.test(s)) },
+    { label: "Meias (calçado)", sizes: sizes.filter((s) => s.includes("/")) },
+  ].filter((g) => g.sizes.length);
+  const known = new Set(groups.flatMap((g) => g.sizes));
+  const rest = sizes.filter((s) => !known.has(s));
+  if (rest.length) groups.push({ label: "Outros", sizes: rest });
+  return groups.length === 1 ? [{ label: "", sizes: groups[0]!.sizes }] : groups;
+}
+
 function Fields({ facets, selected, prefix }: { facets: FacetData; selected: Selected; prefix: string }) {
   const opt = (name: string, value: string, label: React.ReactNode, checked: boolean, extra = "") => (
     <label key={value} className={`fopt ${extra}`} htmlFor={`${prefix}-${name}-${value}`}>
@@ -56,9 +69,14 @@ function Fields({ facets, selected, prefix }: { facets: FacetData; selected: Sel
       {facets.tamanho.length ? (
         <fieldset>
           <legend>Tamanho</legend>
-          <div className="filters__opts">
-            {facets.tamanho.map((s) => opt("tamanho", s, s, selected.tamanho.includes(s), "fopt--size"))}
-          </div>
+          {sizeGroups(facets.tamanho).map((g) => (
+            <div key={g.label} className="filters__group">
+              {g.label ? <p className="filters__sub">{g.label}</p> : null}
+              <div className="filters__opts">
+                {g.sizes.map((s) => opt("tamanho", s, s, selected.tamanho.includes(s), "fopt--size"))}
+              </div>
+            </div>
+          ))}
         </fieldset>
       ) : null}
       {facets.cor.length > 1 ? (

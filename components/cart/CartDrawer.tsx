@@ -8,6 +8,7 @@ import { formatPrice, plural } from "@/lib/commerce/format";
 import { useCart } from "./CartProvider";
 import { CartLines } from "./CartLines";
 import { EmptyBag } from "./EmptyBag";
+import { FreeShippingMeter } from "./FreeShippingMeter";
 
 export function CartDrawer() {
   const { isOpen, close, lines, count, subtotal } = useCart();
@@ -49,7 +50,14 @@ export function CartDrawer() {
         ) : null
       }
     >
-      {lines.length ? <CartLines onNavigate={close} /> : <EmptyBag onNavigate={close} />}
+      {lines.length ? (
+        <>
+          <FreeShippingMeter />
+          <CartLines onNavigate={close} />
+        </>
+      ) : (
+        <EmptyBag onNavigate={close} />
+      )}
     </Dialog>
   );
 }

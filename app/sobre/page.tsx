@@ -19,7 +19,7 @@ export default function AboutPage() {
         eyebrow="Sobre"
         title={
           <>
-            Uma loja de <em>primeira camada.</em>
+            Uma loja de primeira camada
           </>
         }
       />

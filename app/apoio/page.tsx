@@ -23,7 +23,7 @@ export default function SupportPage() {
         eyebrow="Apoio"
         title={
           <>
-            Envios, trocas <em>e pagamentos.</em>
+            Envios, trocas e pagamentos
           </>
         }
       />

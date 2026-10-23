@@ -33,7 +33,7 @@ export default function ContactPage() {
         eyebrow="Contactos"
         title={
           <>
-            Fale <em>connosco.</em>
+            Fale connosco
           </>
         }
         lede="Dúvidas sobre tamanhos, uma encomenda ou uma troca: respondemos por WhatsApp, telefone ou email."

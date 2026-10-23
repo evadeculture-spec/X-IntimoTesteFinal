@@ -44,7 +44,7 @@ export function OrderRequestConfirmation({ refId }: { refId: string | null }) {
       <div className="wrap confirm">
         <p className="eyebrow">Pedido</p>
         <h1 className="display page-head__title">
-          Este pedido já <em>não está aqui.</em>
+          Este pedido já não está aqui
         </h1>
         <p className="lede">
           {refId ? `A referência ${refId} já não está disponível neste separador.` : "Não encontrámos um pedido recente."} Se já
@@ -71,7 +71,7 @@ export function OrderRequestConfirmation({ refId }: { refId: string | null }) {
     <div className="wrap confirm">
       <p className="eyebrow">Pedido preparado</p>
       <h1 className="display page-head__title">
-        Falta só <em>um passo,</em> {summary.firstName}.
+        Falta só um passo, {summary.firstName}.
       </h1>
       <p className="confirm__ref">Ref. {summary.ref}</p>
       <p className="lede">

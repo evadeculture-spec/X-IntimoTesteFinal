@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="wrap not-found">
       <p className="eyebrow">Erro 404</p>
       <p className="display">
-        Gaveta <em>vazia.</em>
+        Gaveta vazia
       </p>
       <h1 className="lede">Esta página não existe ou mudou de sítio.</h1>
       <div style={{ display: "flex", gap: "var(--s-3)", flexWrap: "wrap" }}>

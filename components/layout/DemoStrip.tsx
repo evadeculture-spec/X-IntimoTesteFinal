@@ -5,11 +5,13 @@ export function DemoStrip() {
     <div className="demo-strip" role="note">
       <div className="wrap">
         <span>
-          <strong>Modo demonstração</strong> — produtos, preços e stock são ilustrativos.
+          <strong>
+            <span className="demo-strip__long">Modo </span>demonstração
+          </strong>
+          <span className="demo-strip__long"> — produtos, preços e stock são ilustrativos. Não são cobrados pagamentos.</span>
+          <span className="visually-hidden-desktop"> · dados ilustrativos</span>
         </span>
-        <span>
-          Não são cobrados pagamentos. <Link href="/sobre#demonstracao">Saber mais</Link>
-        </span>
+        <Link href="/sobre#demonstracao">Saber mais</Link>
       </div>
     </div>
   );

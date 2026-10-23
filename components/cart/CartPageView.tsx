@@ -5,6 +5,7 @@ import { formatPrice } from "@/lib/commerce/format";
 import { useCart } from "./CartProvider";
 import { CartLines } from "./CartLines";
 import { EmptyBag } from "./EmptyBag";
+import { FreeShippingMeter } from "./FreeShippingMeter";
 
 export function CartPageView() {
   const { lines, ready, subtotal, count } = useCart();
@@ -25,6 +26,7 @@ export function CartPageView() {
   return (
     <div className="wrap cart-page">
       <section aria-label="Artigos no saco">
+        <FreeShippingMeter />
         <CartLines />
         <p style={{ marginTop: "var(--s-5)" }}>
           <Link href="/loja" className="link">

@@ -112,10 +112,13 @@ describe("catálogo e pesquisa", () => {
     const r = runQuery(DEMO_PRODUCTS, q);
     expect(r.items.every((p) => p.audience === "homem")).toBe(true);
     expect(r.items.map((p) => p.price)).toEqual([...r.items.map((p) => p.price)].sort((a, b) => a - b));
-    const all = runQuery(DEMO_PRODUCTS, parseQuery({ pagina: "2" }));
-    expect(all.pages).toBe(2);
-    expect(all.items.length).toBe(DEMO_PRODUCTS.length - 12);
-    expect(runQuery(DEMO_PRODUCTS, parseQuery({ pagina: "99" })).page).toBe(2);
+    const all = runQuery(DEMO_PRODUCTS, parseQuery({}));
+    expect(all.pages).toBe(1);
+    expect(all.items.length).toBe(DEMO_PRODUCTS.length);
+    expect(runQuery(DEMO_PRODUCTS, parseQuery({ pagina: "99" })).page).toBe(1);
+    const many = Array.from({ length: 30 }, (_, i) => ({ ...DEMO_PRODUCTS[0]!, slug: `p-${i}` }));
+    const p2 = runQuery(many, parseQuery({ pagina: "2" }));
+    expect([p2.pages, p2.page, p2.items.length]).toEqual([2, 2, 6]);
   });
 
   it("filtro de tamanho ignora variantes esgotadas", () => {

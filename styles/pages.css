@@ -236,18 +236,37 @@
 /* ---------- Mosaico de novidades ---------- */
 .mosaic {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--s-6) var(--col-gap);
+  grid-auto-flow: column;
+  grid-auto-columns: 68%;
+  gap: var(--col-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  margin-inline: calc(var(--gutter) * -1);
+  padding-inline: var(--gutter);
+  scroll-padding-inline: var(--gutter);
+  padding-bottom: var(--s-2);
+  scrollbar-width: none;
 }
 
-.mosaic__lead {
-  grid-column: 1 / -1;
+.mosaic > * {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 48em) and (max-width: 63.99em) {
+  .mosaic {
+    grid-auto-columns: 40%;
+  }
 }
 
 @media (min-width: 64em) {
   .mosaic {
+    grid-auto-flow: row;
     grid-template-columns: 2fr 1fr 1fr;
     grid-template-rows: auto auto;
+    gap: var(--s-6) var(--col-gap);
+    overflow: visible;
+    margin: 0;
+    padding: 0;
   }
 
   .mosaic__lead {
@@ -566,107 +585,63 @@
   }
 }
 
-/* ---------- Marcas e como comprar ---------- */
-.how {
-  display: grid;
-  gap: var(--s-8);
+/* ---------- Serviço ---------- */
+.service {
   border-top: 1px solid var(--linha);
+  padding-block: var(--s-7);
 }
 
-.brands-line ul {
+.service__list {
   display: grid;
-  gap: var(--s-4);
-  margin-top: var(--s-4);
+  gap: var(--s-5);
 }
 
-.brands-line li {
+.service__list li {
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: var(--s-3);
+}
+
+.service__list .icon {
+  margin-top: 0.15rem;
+}
+
+.service__list h3 {
+  font-family: var(--f-sans);
+  font-size: var(--t-base);
+  font-weight: 600;
+}
+
+.service__list p {
+  margin-top: 0.15rem;
+  font-size: var(--t-sm);
+  color: var(--carvao-2);
+}
+
+.service__brands {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--s-2) var(--s-5);
-  padding-bottom: var(--s-4);
-  border-bottom: 1px solid var(--linha);
+  margin-top: var(--s-6);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--linha);
 }
 
-.brands-line .display {
-  font-size: var(--t-2xl);
+.service__brands .display {
+  font-size: var(--t-xl);
   text-decoration: none;
   transition: color var(--d-fast);
 }
 
-.brands-line .display:hover {
+.service__brands .display:hover {
   color: var(--tijolo);
 }
 
-.how__list {
-  display: grid;
-  gap: var(--s-6);
-  margin-top: var(--s-6);
-}
-
-.how__list li {
-  display: grid;
-  gap: var(--s-2);
-  max-width: 22rem;
-}
-
-.how__list .disc {
-  width: 2.25rem;
-  height: 2.25rem;
-  font-size: var(--t-sm);
-  margin-bottom: var(--s-2);
-}
-
-.how__list h3 {
-  font-family: var(--f-sans);
-  font-size: var(--t-md);
-  font-weight: 600;
-}
-
-.how__list p {
-  color: var(--carvao-2);
-}
-
 @media (min-width: 48em) {
-  .how__list {
+  .service__list {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-/* ---------- Visita ---------- */
-.visit {
-  background: var(--linho);
-  background-image: var(--tx-grao);
-  padding-block: var(--s-8);
-}
-
-.visit__grid {
-  display: grid;
-  gap: var(--s-6);
-  align-items: end;
-}
-
-.visit__title {
-  font-size: var(--t-xl);
-  max-width: 22ch;
-}
-
-.visit__info {
-  display: grid;
-  gap: var(--s-4);
-}
-
-.visit__info dd {
-  margin-top: var(--s-1);
-}
-
-@media (min-width: 64em) {
-  .visit__grid {
-    grid-template-columns: 1.2fr 2fr auto;
-  }
-
-  .visit__info {
-    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s-6);
   }
 }
 
@@ -896,11 +871,7 @@
 
   .listing__aside {
     display: block;
-    position: sticky;
-    top: calc(var(--header-h) + var(--s-5));
-    max-height: calc(100svh - var(--header-h) - var(--s-7));
-    overflow-y: auto;
-    padding-right: var(--s-2);
+    padding-top: var(--s-2);
   }
 
   .toolbar .filters-toggle {
@@ -1557,4 +1528,34 @@ dialog.zoom {
 
 .error-slot:empty {
   margin-top: calc(var(--s-7) * -1);
+}
+
+/* Produto no telemóvel: imagem quadrada para nome, preço e tamanhos aparecerem mais cedo */
+@media (max-width: 63.99em) {
+  .pdp__gallery .plate-frame {
+    aspect-ratio: 1 / 1;
+  }
+
+  .pdp {
+    gap: var(--s-4);
+  }
+}
+
+.filters__group + .filters__group {
+  margin-top: var(--s-3);
+}
+
+.filters__sub {
+  margin-bottom: var(--s-2);
+  font-size: var(--t-xs);
+  color: var(--carvao-3);
+}
+
+.page-head--compact {
+  padding-block: var(--s-4);
+}
+
+.page-head--compact .page-head__title {
+  margin-top: var(--s-1);
+  font-size: var(--t-xl);
 }

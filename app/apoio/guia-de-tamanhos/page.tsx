@@ -17,7 +17,7 @@ export default function SizeGuidePage() {
         eyebrow="Guia de tamanhos"
         title={
           <>
-            Medir uma vez, <em>acertar sempre.</em>
+            Medir uma vez, acertar sempre
           </>
         }
         lede="As medidas são do corpo, não da peça. Use uma fita métrica, sem apertar, por cima de roupa interior leve."

@@ -61,62 +61,73 @@ export interface ProductPlateProps {
   garment: GarmentKind;
   weave: Weave;
   hex: string;
-  /** Texto de etiqueta no canto (ex.: referência e cor). */
-  caption?: string;
   /** Rótulo acessível; vazio = decorativo. */
   label?: string;
   className?: string;
 }
 
+/** Caixa do desenho (a partir das coordenadas das silhuetas), para enquadrar todas as peças da mesma forma. */
+const FIT_CACHE = new Map<GarmentKind, { x: number; y: number; w: number; h: number; zoom: number }>();
+function fittedBox(garment: GarmentKind) {
+  const hit = FIT_CACHE.get(garment);
+  if (hit) return hit;
+  const nums = FLATS[garment].outline.join(" ").match(/-?\d+(?:\.\d+)?/g)!.map(Number);
+  const xs = nums.filter((_, i) => i % 2 === 0);
+  const ys = nums.filter((_, i) => i % 2 === 1);
+  const [x0, x1, y0, y1] = [Math.min(...xs), Math.max(...xs), Math.min(...ys), Math.max(...ys)];
+  // A peça ocupa ~70% da largura ou ~74% da altura da prancha (4:5), o que for mais restritivo.
+  const w = Math.max((x1 - x0) / 0.7, ((y1 - y0) / 0.74) * 0.8);
+  const h = w * 1.25;
+  const box = { x: (x0 + x1) / 2 - w / 2, y: (y0 + y1) / 2 - h / 2 - h * 0.02, w, h, zoom: 200 / w };
+  FIT_CACHE.set(garment, box);
+  return box;
+}
+
 /**
  * Prancha de produto: desenho técnico plano sobre fundo de linho, preenchido
- * com o tecido da cor escolhida. Substituída automaticamente pela fotografia
- * real quando o produto tiver imagens.
+ * com o tecido da cor escolhida. Todas as peças são enquadradas pela mesma
+ * regra (caixa ajustada), com traço e textura à mesma escala visual.
+ * Substituída automaticamente pela fotografia real quando o produto tiver imagens.
  */
-export function ProductPlate({ garment, weave, hex, caption, label, className }: ProductPlateProps) {
+export function ProductPlate({ garment, weave, hex, label, className }: ProductPlateProps) {
   const flat = FLATS[garment];
-  const id = `w-${weave}-${hex.replace("#", "")}`;
+  const box = fittedBox(garment);
+  const id = `w-${weave}-${hex.replace("#", "")}-${garment}`;
   const isDark = luminance(hex) < 0.18;
   const detail = isDark ? "rgba(255,255,255,0.55)" : "rgba(27,25,23,0.55)";
+  const ns = { vectorEffect: "non-scaling-stroke" as const };
   return (
     <svg
       className={`plate ${className ?? ""}`}
-      viewBox="0 0 200 250"
+      viewBox={`${box.x.toFixed(1)} ${box.y.toFixed(1)} ${box.w.toFixed(1)} ${box.h.toFixed(1)}`}
       role={label ? "img" : undefined}
       aria-label={label}
       aria-hidden={label ? undefined : true}
       preserveAspectRatio="xMidYMid meet"
     >
       <defs>
-        <WeavePattern id={id} weave={weave} hex={hex} />
+        <WeavePattern id={id} weave={weave} hex={hex} scale={1 / box.zoom} />
         <linearGradient id="plate-shade" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#fff" stopOpacity="0.16" />
           <stop offset="0.55" stopColor="#fff" stopOpacity="0" />
           <stop offset="1" stopColor="#000" stopOpacity="0.16" />
         </linearGradient>
       </defs>
-      <g transform="translate(0 4)">
-        {flat.outline.map((d, i) => (
-          <g key={i}>
-            <path d={d} fill={`url(#${id})`} />
-            <path d={d} fill="url(#plate-shade)" stroke="var(--plate-ink, #1B1917)" strokeWidth="1.3" strokeLinejoin="round" />
-          </g>
-        ))}
-        {flat.details.map((d, i) => (
-          <path key={i} d={d} fill="none" stroke={detail} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
-        ))}
-        {flat.stitches?.map((d, i) => (
-          <path key={i} d={d} fill="none" stroke={detail} strokeWidth="0.9" strokeDasharray="2.2 2.4" strokeLinecap="round" />
-        ))}
-        {flat.dots?.map(([cx, cy], i) => (
-          <circle key={i} cx={cx} cy={cy} r="1.9" fill={isDark ? "#EDE6DA" : "#1B1917"} opacity="0.75" />
-        ))}
-      </g>
-      {caption ? (
-        <text x="12" y="242" className="plate__caption">
-          {caption}
-        </text>
-      ) : null}
+      {flat.outline.map((d, i) => (
+        <g key={i}>
+          <path d={d} fill={`url(#${id})`} />
+          <path d={d} fill="url(#plate-shade)" stroke="var(--plate-ink, #1B1917)" strokeWidth="1.4" strokeLinejoin="round" {...ns} />
+        </g>
+      ))}
+      {flat.details.map((d, i) => (
+        <path key={i} d={d} fill="none" stroke={detail} strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" {...ns} />
+      ))}
+      {flat.stitches?.map((d, i) => (
+        <path key={i} d={d} fill="none" stroke={detail} strokeWidth="1" strokeDasharray="2.4 2.6" strokeLinecap="round" {...ns} />
+      ))}
+      {flat.dots?.map(([cx, cy], i) => (
+        <circle key={i} cx={cx} cy={cy} r={1.9 / Math.max(1, box.zoom * 0.8)} fill={isDark ? "#EDE6DA" : "#1B1917"} opacity="0.75" />
+      ))}
     </svg>
   );
 }

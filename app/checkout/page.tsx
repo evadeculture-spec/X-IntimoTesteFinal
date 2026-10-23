@@ -10,11 +10,11 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
   const { cancelado } = await searchParams;
   return (
     <>
-      <header className="page-head">
+      <header className="page-head page-head--compact">
         <div className="wrap">
           <p className="eyebrow">Checkout</p>
           <h1 className="display page-head__title">
-            Finalizar <em>encomenda.</em>
+            Finalizar encomenda
           </h1>
         </div>
       </header>

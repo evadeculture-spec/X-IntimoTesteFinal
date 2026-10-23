@@ -15,14 +15,6 @@
   color: var(--carvao-2);
 }
 
-.eyebrow::before {
-  content: "";
-  width: 0.55em;
-  height: 0.55em;
-  border-radius: 50%;
-  background: var(--tijolo);
-  flex: none;
-}
 
 .on-dark .eyebrow {
   color: rgba(247, 243, 236, 0.78);
@@ -698,19 +690,22 @@ dialog::backdrop {
 
 .plate {
   position: absolute;
-  inset: 6% 10% 2%;
-  width: 80%;
-  height: 92%;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   filter: drop-shadow(0 10px 12px rgba(27, 25, 23, 0.09));
   transition: transform var(--d-slow) var(--ease);
 }
 
-.plate__caption {
+.plate-frame__caption {
+  position: absolute;
+  left: var(--s-4);
+  bottom: var(--s-3);
   font-family: var(--f-mono);
-  font-size: 6px;
+  font-size: var(--t-2xs);
   letter-spacing: 0.08em;
-  fill: var(--carvao-3);
   text-transform: uppercase;
+  color: var(--carvao-3);
 }
 
 /* ---------- Cartão de produto ---------- */
@@ -751,7 +746,7 @@ dialog::backdrop {
   }
 
   .card:hover .plate {
-    transform: scale(1.03) rotate(-0.6deg);
+    transform: scale(1.025);
   }
 }
 
@@ -1648,4 +1643,76 @@ select.field__input {
   color: var(--algodao);
   font-size: var(--t-sm);
   border-radius: var(--r-xs);
+}
+
+.card__new {
+  color: var(--tijolo);
+}
+
+.on-dark .card__new {
+  color: #f0b4a6;
+}
+
+@media (max-width: 47.99em) {
+  .demo-strip .wrap {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    text-align: left;
+    padding-block: 0.4rem;
+  }
+
+  .demo-strip__long {
+    display: none;
+  }
+}
+
+@media (min-width: 48em) {
+  .visually-hidden-desktop {
+    display: none;
+  }
+}
+
+/* Progresso para portes grátis */
+.ship-meter {
+  display: grid;
+  gap: var(--s-2);
+  margin-bottom: var(--s-5);
+  font-size: var(--t-sm);
+}
+
+.ship-meter__bar {
+  display: block;
+  height: 3px;
+  background: var(--linho-2);
+}
+
+.ship-meter__bar span {
+  display: block;
+  height: 100%;
+  background: var(--tijolo);
+  transition: width var(--d-slow) var(--ease);
+}
+
+@media (max-width: 47.99em) {
+  .demo-strip .wrap > * {
+    white-space: nowrap;
+  }
+
+  .crumbs li:last-child {
+    min-width: 0;
+  }
+
+  .crumbs ol {
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  .crumbs li {
+    white-space: nowrap;
+  }
+
+  .crumbs li:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

@@ -173,7 +173,7 @@ export default async function ProductPage({ params }: { params: Promise<Params> 
       {related.length ? (
         <section className="wrap related" aria-labelledby="relacionados">
           <h2 id="relacionados" className="display section-head__title" style={{ marginBottom: "var(--s-6)" }}>
-            Da mesma <em>gaveta.</em>
+            Da mesma gaveta
           </h2>
           <div className="rail rail--static">
             {related.map((p, i) => (

@@ -11,7 +11,7 @@ export default function ErrorPage({ error, reset }: { error: Error & { digest?: 
     <div className="wrap not-found">
       <p className="eyebrow">Erro</p>
       <h1 className="display" style={{ fontSize: "var(--t-2xl)" }}>
-        Algo correu <em>mal.</em>
+        Algo correu mal
       </h1>
       <p className="lede">Não conseguimos carregar esta página. O seu saco continua guardado.</p>
       <div style={{ display: "flex", gap: "var(--s-3)", flexWrap: "wrap" }}>

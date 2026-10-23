@@ -166,11 +166,6 @@ export function ProductView({
             ))}
           </div>
         ) : null}
-        {product.images.length === 0 ? (
-          <p className="mono muted" style={{ paddingInline: "var(--gutter)", fontSize: "var(--t-2xs)" }}>
-            Desenho técnico e amostra ilustrativos. Fotografia do produto em breve.
-          </p>
-        ) : null}
       </div>
 
       <div className="pdp__panel">

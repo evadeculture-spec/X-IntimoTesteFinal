@@ -5,7 +5,7 @@ export function EmptyBag({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div style={{ display: "grid", gap: "var(--s-4)" }}>
       <p className="display" style={{ fontSize: "var(--t-xl)" }}>
-        Ainda não há nada <em>na gaveta.</em>
+        Ainda não há nada na gaveta
       </p>
       <p className="muted">Comece por uma família:</p>
       <ul role="list" style={{ display: "flex", flexWrap: "wrap", gap: "var(--s-2)" }}>

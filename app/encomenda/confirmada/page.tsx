@@ -23,15 +23,15 @@ export default async function ConfirmationPage({ searchParams }: { searchParams:
         <h1 className="display page-head__title">
           {paid ? (
             <>
-              Obrigado. <em>Está tratado.</em>
+              Obrigado. Está tratado
             </>
           ) : pending ? (
             <>
-              Quase <em>feito.</em>
+              Quase feito
             </>
           ) : (
             <>
-              Não conseguimos <em>confirmar.</em>
+              Não conseguimos confirmar
             </>
           )}
         </h1>

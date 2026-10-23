@@ -61,11 +61,11 @@ export function ProductListing({ query, basePath }: { query: ProductQuery; baseP
             <p className="display empty__title">
               {query.q ? (
                 <>
-                  Nada encontrado para <em>“{query.q}”.</em>
+                  Nada encontrado para “{query.q}”
                 </>
               ) : (
                 <>
-                  Nenhuma peça com <em>estes filtros.</em>
+                  Nenhuma peça com estes filtros
                 </>
               )}
             </p>

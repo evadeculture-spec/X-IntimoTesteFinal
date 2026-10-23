@@ -8,7 +8,6 @@ export function HeroDrawer({ categories, counts }: { categories: Category[]; cou
     <section className="hero" aria-labelledby="hero-title">
       <div className="wrap hero__grid">
         <div className="hero__copy">
-          <p className="eyebrow">Interiores · Pijamas · Térmica · Meias</p>
           <h1 id="hero-title" className="display hero__title">
             A primeira <em>camada.</em>
           </h1>

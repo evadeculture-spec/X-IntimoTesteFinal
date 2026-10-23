@@ -71,6 +71,7 @@ test("produto: exige tamanho, adiciona ao saco e persiste", async ({ page }) => 
   await page.getByRole("button", { name: /Saco de compras/ }).click();
   const bag = page.getByRole("dialog", { name: /O seu saco/ });
   await expect(bag).toContainText("Rosa-chá");
+  await expect(bag.locator(".ship-meter")).toContainText(/Faltam 20,10\s€ para portes grátis/);
   await bag.getByRole("button", { name: "Aumentar quantidade" }).click();
   await expect(bag.locator("output")).toHaveText("2");
   await page.keyboard.press("Escape");
@@ -149,7 +150,7 @@ test("páginas institucionais e 404", async ({ page }) => {
   }
   const res = await page.goto("/produto/nao-existe");
   expect(res?.status()).toBe(404);
-  await expect(page.getByText("Gaveta vazia.")).toBeVisible();
+  await expect(page.getByText("Gaveta vazia")).toBeVisible();
 });
 
 test("modo demonstração: noindex e robots bloqueados", async ({ page, request }) => {

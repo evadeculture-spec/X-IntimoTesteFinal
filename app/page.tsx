@@ -10,10 +10,11 @@ import { Pending } from "@/components/ui/Pending";
 import { JsonLd } from "@/components/ui/JsonLd";
 import { BUSINESS } from "@/data/store";
 import { getBrand, getCatalog, productsIn } from "@/lib/commerce/catalog";
-import { checkoutChannels, siteUrl } from "@/lib/commerce/settings";
+import { formatPrice } from "@/lib/commerce/format";
+import { checkoutChannels, shippingMethods, siteUrl } from "@/lib/commerce/settings";
 
 export default function HomePage() {
-  const { products, categories, brands } = getCatalog();
+  const { products, categories, brands, mode } = getCatalog();
   const counts = Object.fromEntries(categories.map((c) => [c.id, productsIn(c.id).length]));
   const newest = [...products].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)).slice(0, 5);
   const night = productsIn("pijamas").slice(0, 3);
@@ -22,6 +23,7 @@ export default function HomePage() {
   const thermal = productsIn("termica");
   const labelProduct = productsIn("termica")[0] ?? products[0];
   const channels = checkoutChannels();
+  const home = shippingMethods().find((m) => m.regions !== "pickup" && m.regions.includes("continente"));
   const base = siteUrl();
 
   return (
@@ -51,7 +53,7 @@ export default function HomePage() {
             eyebrow="Novidades"
             title={
               <>
-                Acabado de <em>chegar.</em>
+                Acabado de chegar
               </>
             }
             link={{ href: "/loja?ordem=novidades", label: "Ver todas" }}
@@ -62,6 +64,7 @@ export default function HomePage() {
                 <ProductCard
                   product={p}
                   index={i}
+                  hideNew
                   priority={i === 0}
                   sizes={i === 0 ? "(min-width: 64em) 45vw, 90vw" : "(min-width: 64em) 22vw, 60vw"}
                 />
@@ -78,7 +81,7 @@ export default function HomePage() {
             <div className="feature__copy" data-reveal>
               <p className="eyebrow">Pijamas</p>
               <h2 id="noite" className="display feature__title">
-                Dormir bem começa <em>no tecido.</em>
+                Dormir bem começa no tecido
               </h2>
               <p className="lede">
                 Flanela escovada para o inverno, malha de algodão para a meia-estação, modal para quem tem calor. Em cada
@@ -111,7 +114,7 @@ export default function HomePage() {
           <div className="read-label__copy">
             <p className="eyebrow">Antes de escolher</p>
             <h2 id="ler-etiqueta" className="display section-head__title">
-              Leia a peça <em>antes de a vestir.</em>
+              Leia a peça antes de a vestir
             </h2>
             <ol role="list" className="steps-list">
               <li data-reveal>
@@ -153,8 +156,8 @@ export default function HomePage() {
       {/* Díptico: Interiores | Meias */}
       <section className="diptych" aria-label="Interiores e meias">
         {[
-          { cat: categories.find((c) => c.id === "interiores")!, items: underwear, title: <>Para todos <em>os dias.</em></> },
-          { cat: categories.find((c) => c.id === "meias")!, items: socks, title: <>Do tornozelo <em>para baixo.</em></> },
+          { cat: categories.find((c) => c.id === "interiores")!, items: underwear, title: <>Para todos os dias</> },
+          { cat: categories.find((c) => c.id === "meias")!, items: socks, title: <>Do tornozelo para baixo</> },
         ].map(({ cat, items, title }) =>
           items.length ? (
             <div key={cat.id} className={`diptych__panel tone--${cat.tone} weave--${cat.weave}${cat.tone === "rubi" ? " on-dark" : ""}`}>
@@ -182,7 +185,7 @@ export default function HomePage() {
           <div className="thermal__head">
             <p className="eyebrow">Roupa térmica</p>
             <h2 id="termica" className="display thermal__title">
-              Para o frio, <em>por baixo.</em>
+              Para o frio, por baixo
             </h2>
             <p className="lede">A camada que ninguém vê e que faz a diferença num dia de inverno.</p>
             <Link href="/loja/termica" className="link-arrow">
@@ -193,79 +196,57 @@ export default function HomePage() {
         </section>
       ) : null}
 
-      {/* Marcas + como comprar */}
-      <section className="section wrap how" aria-labelledby="como-comprar">
-        <div className="brands-line" data-reveal>
-          <p className="eyebrow">Marcas na loja</p>
-          <ul role="list">
-            {brands.map((b) => (
-              <li key={b.id}>
-                <Link href={`/loja?marca=${b.id}`} className="display">
-                  {b.name}
-                </Link>
-                <span className="mono muted">{b.description}</span>
-              </li>
-            ))}
+      {/* Serviço: como comprar, entrega e loja — uma faixa, não três secções */}
+      <section className="service" aria-labelledby="servico">
+        <div className="wrap">
+          <h2 id="servico" className="visually-hidden">
+            Como comprar
+          </h2>
+          <ul role="list" className="service__list">
+            <li>
+              <Icon name={channels.online.enabled ? "lock" : "chat"} />
+              <div>
+                <h3>{channels.online.enabled ? "Pagamento seguro" : "Encomenda por WhatsApp"}</h3>
+                <p>
+                  {channels.online.enabled
+                    ? "Cartão, MB WAY ou Multibanco, na página segura da Stripe."
+                    : "Prepara o saco aqui; nós confirmamos a disponibilidade e o pagamento consigo."}
+                </p>
+              </div>
+            </li>
+            <li>
+              <Icon name="truck" />
+              <div>
+                <h3>Entrega em Portugal</h3>
+                <p>
+                  {home
+                    ? `Continente ${formatPrice(home.price)}${home.freeFrom ? `, grátis a partir de ${formatPrice(home.freeFrom)}` : ""}${mode === "demo" ? " (ilustrativo)" : ""}. Madeira e Açores incluídos.`
+                    : "Continente, Madeira e Açores. Portes confirmados antes do envio."}
+                </p>
+              </div>
+            </li>
+            <li>
+              <Icon name="store" />
+              <div>
+                <h3>Levantar na loja</h3>
+                <p>
+                  <Pending value={BUSINESS.address} label="morada por confirmar" />
+                  {BUSINESS.openingHours ? ` · ${BUSINESS.openingHours}` : ""}.{" "}
+                  <Link className="link" href="/contactos">
+                    Contactos
+                  </Link>
+                </p>
+              </div>
+            </li>
           </ul>
-        </div>
-
-        <div className="how__steps">
-          <h2 id="como-comprar" className="display section-head__title">
-            Como <em>comprar.</em>
-          </h2>
-          <ol role="list" className="how__list">
-            <li>
-              <span className="disc">1</span>
-              <h3>Escolha cor e tamanho</h3>
-              <p>Junte ao saco as peças que quer. O saco fica guardado neste dispositivo.</p>
-            </li>
-            <li>
-              <span className="disc">2</span>
-              <h3>Finalize a encomenda</h3>
-              <p>
-                {channels.online.enabled
-                  ? "Pague online com segurança, ou envie-nos o pedido por WhatsApp e combinamos consigo."
-                  : "Envie-nos o pedido por WhatsApp, com tudo já escrito. Confirmamos a disponibilidade e a forma de pagamento consigo."}
-              </p>
-            </li>
-            <li>
-              <span className="disc">3</span>
-              <h3>Receba ou levante</h3>
-              <p>Enviamos para casa ou prepara-se para levantar na loja.</p>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      {/* Visita */}
-      <section className="visit" aria-labelledby="visita">
-        <div className="wrap visit__grid">
-          <h2 id="visita" className="display visit__title">
-            Também nos encontra <em>ao balcão.</em>
-          </h2>
-          <dl className="visit__info">
-            <div>
-              <dt className="eyebrow">Morada</dt>
-              <dd>
-                <Pending value={BUSINESS.address} />
-              </dd>
-            </div>
-            <div>
-              <dt className="eyebrow">Horário</dt>
-              <dd>
-                <Pending value={BUSINESS.openingHours} />
-              </dd>
-            </div>
-            <div>
-              <dt className="eyebrow">Contacto</dt>
-              <dd>
-                <Pending value={BUSINESS.phone ?? BUSINESS.email} />
-              </dd>
-            </div>
-          </dl>
-          <Link href="/contactos" className="btn btn--outline">
-            Contactos e direções
-          </Link>
+          <p className="service__brands">
+            <span className="mono muted">Marcas na loja</span>
+            {brands.map((b) => (
+              <Link key={b.id} href={`/loja?marca=${b.id}`} className="display">
+                {b.name}
+              </Link>
+            ))}
+          </p>
         </div>
       </section>
     </>

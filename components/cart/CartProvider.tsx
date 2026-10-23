@@ -20,6 +20,8 @@ interface CartContextValue {
   close: () => void;
   bump: number;
   announce: (msg: string) => void;
+  /** Limite de portes grátis configurado (Continente), ou null. */
+  freeShippingFrom: number | null;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -42,7 +44,7 @@ function write(lines: CartLine[]) {
   }
 }
 
-export function CartProvider({ children }: { children: ReactNode }) {
+export function CartProvider({ children, freeShippingFrom = null }: { children: ReactNode; freeShippingFrom?: number | null }) {
   const [lines, setLines] = useState<CartLine[]>([]);
   const [ready, setReady] = useState(false);
   const [isOpen, setOpen] = useState(false);
@@ -118,8 +120,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const count = lines.reduce((s, l) => s + l.quantity, 0);
     const subtotal = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
-    return { lines, ready, count, subtotal, add, setQuantity, remove, clear, isOpen, open, close, bump, announce };
-  }, [lines, ready, add, setQuantity, remove, clear, isOpen, open, close, bump, announce]);
+    return { lines, ready, count, subtotal, add, setQuantity, remove, clear, isOpen, open, close, bump, announce, freeShippingFrom };
+  }, [lines, ready, add, setQuantity, remove, clear, isOpen, open, close, bump, announce, freeShippingFrom]);
 
   return (
     <CartContext.Provider value={value}>

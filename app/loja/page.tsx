@@ -21,11 +21,11 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           <h1 className="display page-head__title">
             {query.ordem === "novidades" ? (
               <>
-                Novi<em>dades.</em>
+                Novidades
               </>
             ) : (
               <>
-                Toda a <em>loja.</em>
+                Toda a loja
               </>
             )}
           </h1>

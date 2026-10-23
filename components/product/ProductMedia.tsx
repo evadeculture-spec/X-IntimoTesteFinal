@@ -32,9 +32,13 @@ export function ProductMedia({
         garment={product.garment}
         weave={product.weave}
         hex={colour.hex}
-        caption={caption ? `${product.ref} · ${colour.name}` : undefined}
         label={decorative ? undefined : `Desenho ilustrativo: ${product.name}, ${colour.name}`}
       />
+      {caption ? (
+        <span className="plate-frame__caption" aria-hidden="true">
+          {product.ref} · {colour.name} · desenho ilustrativo
+        </span>
+      ) : null}
     </span>
   );
 }
