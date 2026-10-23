@@ -1,0 +1,4 @@
+{
+  "$comment": "Catálogo REAL da loja. Formato: ver lib/commerce/types.ts (Product) e docs/CATALOGO.md. Enquanto estiver vazio, o site usa o catálogo de demonstração.",
+  "products": []
+}
